@@ -1,0 +1,75 @@
+
+<div class="event-details-container">
+
+  <%= link_to "← Back to Events", events_path, class: "back-link" %>
+
+  <div class="event-details-card">
+
+    <% if @event.image_url.present? %>
+      <img
+        src="<%= @event.image_url %>"
+        alt="<%= @event.title %>"
+        class="event-details-image"
+      >
+    <% else %>
+      <div class="no-image">
+        No Image Available
+      </div>
+    <% end %>
+
+    <div class="event-details-content">
+
+      <h1><%= @event.title %></h1>
+
+      <div class="event-info">
+        <p>
+          <strong>Date:</strong>
+          <%= @event.starts_at&.strftime("%d %B %Y, %I:%M %p") || "Not available" %>
+        </p>
+
+        <% if @event.ends_at.present? %>
+          <p>
+            <strong>End Date:</strong>
+            <%= @event.ends_at.strftime("%d %B %Y, %I:%M %p") %>
+          </p>
+        <% end %>
+
+        <% if @event.status.present? %>
+          <p>
+            <strong>Status:</strong>
+            <%= @event.status.humanize %>
+          </p>
+        <% end %>
+      </div>
+
+      <div class="event-description">
+        <h3>About This Event</h3>
+
+        <p>
+          <%= @event.description.presence || "No description available." %>
+        </p>
+      </div>
+
+      <% if @event.billetto_url.present? %>
+        <%= link_to "Book / View on Billetto", @event.billetto_url, target: "_blank", rel: "noopener noreferrer", class: "event-button" %>
+      <% end %>
+
+        <div class="voting-section">
+            <h3>Vote for this event</h3>
+            <% if clerk.user? %>
+                <%= button_to "👍 Like", event_votes_path(@event, vote_type: "upvote"), method: :post %>
+                <%= button_to "👎 Dislike", event_votes_path(@event, vote_type: "downvote"), method: :post %>
+            <% else %>
+                <p>Please sign in to vote on this event.</p>
+                <%= link_to "Sign In", clerk.sign_in_url, class: "event-button" %>
+                <%= link_to "Sign Up", clerk.sign_up_url, class: "event-button" %>
+
+            <% end %>
+            <% counts = Voting::VoteCounter.new(@event).call %>
+
+            <p>👍 <%= counts[:upvotes] %> Likes</p>
+            <p>👎 <%= counts[:downvotes] %> Dislikes</p>
+        </div>
+    </div>
+  </div>
+</div>

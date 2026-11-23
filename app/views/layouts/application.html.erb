@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Billetto</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <nav>
+      <% if clerk.user? %>
+        <span>Welcome!</span>
+
+        <% if ENV["CLERK_USER_PROFILE_URL"].present? %>
+          <%= link_to "My Account", ENV["CLERK_USER_PROFILE_URL"] %>
+        <% end %>
+
+        <%= link_to "Logout", clerk.sign_out_url %>
+      <% else %>
+        <%= link_to "Sign In", clerk.sign_in_url %>
+        <%= link_to "Sign Up", clerk.sign_up_url %>
+      <% end %>
+    </nav>
+    <main>
+      <%= yield %>
+    </main>
+  </body>
+</html>

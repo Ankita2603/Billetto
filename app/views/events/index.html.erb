@@ -1,0 +1,46 @@
+
+<div class="container">
+  <h1 class="page-title">Upcoming Events</h1>
+
+  <% if @events.present? %>
+    <div class="events-grid">
+      <% @events.each do |event| %>
+        <div class="event-card">
+
+          <% if event.image_url.present? %>
+            <img
+              src="<%= event.image_url %>"
+              alt="<%= event.title %>"
+              class="event-image"
+            >
+          <% else %>
+            <div class="no-image">No Image Available</div>
+          <% end %>
+
+          <div class="event-content">
+            <h2><%= event.title %></h2>
+
+            <p class="event-date">
+              <%= event.starts_at&.strftime("%d %B %Y, %I:%M %p") || "Date not available" %>
+            </p>
+
+            <p class="event-description">
+              <%= truncate(event.description, length: 140) %>
+            </p>
+
+            <%= link_to "View Details", event_path(event), class: "event-button" %>
+            <div class="vote-counts">
+              <% counts = @vote_counts[event.id] %>
+
+              <span>👍 <%= counts[:upvotes] %> Likes</span>
+
+              <span>👎 <%= counts[:downvotes] %> Dislikes</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="empty-message">No events available at the moment.</p>
+  <% end %>
+</div>
